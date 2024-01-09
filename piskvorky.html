@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>piskvorky</title>
+    <link rel="stylesheet" href="piskvorkystyle.css">
+
+</head>
+<body>
+    <div id="board"></div>
+
+  <script>
+    const board = document.getElementById('board');
+    let currentPlayer = 'X';
+
+    // Initialize the board
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.addEventListener('click', () => handleCellClick(i));
+      board.appendChild(cell);
+    }
+
+    // Handle cell click
+    function handleCellClick(index) {
+      const cell = board.children[index];
+
+      if (!cell.textContent) { // Check if the cell is empty
+        cell.textContent = currentPlayer;
+
+        if (checkWinner()) {
+          alert(`Player ${currentPlayer} wins!`);
+          resetBoard();
+        } else if (isBoardFull()) {
+          alert("It's a tie!");
+          resetBoard();
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch player
+        }
+      }
+    }
+
+    // Check for a winner
+    function checkWinner() {
+      const cells = board.children;
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]              // Diagonals
+      ];
+
+      for (const combination of winningCombinations) {
+        const [a, b, c] = combination;
+        if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+          return true; // We have a winner
+        }
+      }
+
+      return false;
+    }
+
+    // Check if the board is full
+    function isBoardFull() {
+      const cells = board.children;
+      for (const cell of cells) {
+        if (!cell.textContent) {
+          return false; // At least one cell is empty
+        }
+      }
+      return true; // All cells are filled
+    }
+
+    // Reset the board
+    function resetBoard() {
+      for (const cell of board.children) {
+        cell.textContent = '';
+      }
+      currentPlayer = 'X';
+    }
+  </script>
+</body>
+</html>
